@@ -1,11 +1,12 @@
-# 配置文件模板
+# 配置文件模板（中国网络优化版）
 
-本文档提供各类配置文件的模板，包括环境变量、conda 配置、shell 配置等。
+本文档提供各类配置文件的模板，包括环境变量、conda 配置、shell 配置、国内镜像源等。
 
 ## 目录
 - [Shell 环境变量配置](#shell-环境变量配置)
 - [Conda 配置](#conda-配置)
 - [Zsh 配置](#zsh-配置)
+- [国内镜像源配置](#国内镜像源配置)
 - [桌面快捷方式](#桌面快捷方式)
 
 ---
@@ -18,7 +19,7 @@
 
 ```bash
 # ==============================================================================
-# Ubuntu Dev Setup - 环境变量配置
+# Ubuntu Dev Setup - 环境变量配置（中国网络优化版）
 # 由 ubuntu-dev-setup 自动添加
 # ==============================================================================
 
@@ -35,10 +36,9 @@ export CUDNN_INCLUDE_DIR=$CUDA_PATH/include
 export CUDNN_LIB_DIR=$CUDA_PATH/lib64
 
 # ------------------------------------------------------------------------------
-# Conda 环境变量 (如果使用 bash)
+# Conda 环境变量
 # ------------------------------------------------------------------------------
 # >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
 __conda_setup="$('/home/YOUR_USERNAME/anaconda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
 if [ $? -eq 0 ]; then
     eval "$__conda_setup"
@@ -53,13 +53,15 @@ unset __conda_setup
 # <<< conda initialize <<<
 
 # ------------------------------------------------------------------------------
+# pip 镜像别名（快速安装）
+# ------------------------------------------------------------------------------
+alias pipi='pip install -i https://pypi.tuna.tsinghua.edu.cn/simple'
+alias pipia='pip install -i https://mirrors.aliyun.com/pypi/simple/'
+
+# ------------------------------------------------------------------------------
 # 自定义环境变量
 # ------------------------------------------------------------------------------
-# Python 编码
 export PYTHONIOENCODING=utf-8
-
-# CUDA 可见设备（可选，用于指定使用哪些 GPU）
-# export CUDA_VISIBLE_DEVICES=0,1
 
 # ------------------------------------------------------------------------------
 # 别名设置
@@ -69,8 +71,6 @@ alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
 alias grep='grep --color=auto'
-alias fgrep='fgrep --color=auto'
-alias egrep='egrep --color=auto'
 
 # Git 别名
 alias gs='git status'
@@ -87,78 +87,38 @@ alias cdeact='conda deactivate'
 # ------------------------------------------------------------------------------
 # PATH 扩展
 # ------------------------------------------------------------------------------
-# 添加用户 bin 目录
 export PATH=$HOME/.local/bin:$PATH
-
-# 添加 CUDA 路径（确保在最前面）
-export PATH=/usr/local/cuda/bin:$PATH
-export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
-```
-
-### CUDA 环境变量（独立）
-
-仅 CUDA/cuDNN 相关配置：
-
-```bash
-# CUDA 12.6 环境变量
-export CUDA_PATH=/usr/local/cuda-12.6
-export PATH=$CUDA_PATH/bin:$PATH
-export LD_LIBRARY_PATH=$CUDA_PATH/lib64:$LD_LIBRARY_PATH
-export CUDADIR=$CUDA_PATH
-
-# cuDNN 路径
-export CUDNN_INCLUDE_DIR=$CUDA_PATH/include
-export CUDNN_LIB_DIR=$CUDA_PATH/lib64
-```
-
-### CUDA 12.1 环境变量
-
-```bash
-# CUDA 12.1 环境变量
-export CUDA_PATH=/usr/local/cuda-12.1
-export PATH=$CUDA_PATH/bin:$PATH
-export LD_LIBRARY_PATH=$CUDA_PATH/lib64:$LD_LIBRARY_PATH
-export CUDADIR=$CUDA_PATH
 ```
 
 ---
 
 ## Conda 配置
 
-### .condarc 基础模板
+### .condarc 基础模板（国内镜像）
 
 创建 `~/.condarc` 文件：
 
 ```yaml
-# Conda 配置文件
+# Conda 配置文件（清华镜像源）
+channels:
+  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main
+  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free
+  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/r
+  - defaults
+
+show_channel_urls: true
+
 # 将环境存储在指定路径（避免占用主目录空间）
 envs_dirs:
   - ~/workspace/anaconda3/envs
   - ~/.conda/envs
 
-# 包缓存路径
 pkgs_dirs:
   - ~/workspace/anaconda3/pkgs
   - ~/.conda/pkgs
-
-# 频道配置
-channels:
-  - defaults
-  - conda-forge
-
-# 显示频道 URL
-show_channel_urls: true
-
-# 默认 Python 版本（可选）
-# default_python: 3.10
-
-# 自动激活 base 环境（可选，默认 true）
-# auto_activate_base: false
 ```
 
 ### .condarc 自定义环境路径
-
-将 conda 环境存储在大容量磁盘：
 
 ```yaml
 envs_dirs:
@@ -170,19 +130,8 @@ pkgs_dirs:
   - ~/anaconda3/pkgs
 
 channels:
-  - defaults
-  - conda-forge
-
-show_channel_urls: true
-```
-
-### 国内镜像源配置
-
-```yaml
-channels:
   - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main
   - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free
-  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/r
   - defaults
 
 show_channel_urls: true
@@ -192,7 +141,7 @@ show_channel_urls: true
 
 ## Zsh 配置
 
-### .zshrc 基础模板
+### .zshrc 完整模板
 
 ```bash
 # Path to your oh-my-zsh installation.
@@ -205,11 +154,11 @@ ZSH_THEME="robbyrussell"
 # 插件配置
 plugins=(
     git
+    extract
     zsh-autosuggestions
     zsh-syntax-highlighting
     sudo
     copypath
-    copyfile
     history
     python
 )
@@ -243,6 +192,10 @@ fi
 unset __conda_setup
 # <<< conda initialize <<<
 
+# pip 镜像别名
+alias pipi='pip install -i https://pypi.tuna.tsinghua.edu.cn/simple'
+alias pipia='pip install -i https://mirrors.aliyun.com/pypi/simple/'
+
 # 别名
 alias ll='ls -alF'
 alias la='ls -A'
@@ -261,7 +214,6 @@ alias gl='git log --oneline --graph --decorate'
 # Python 别名
 alias python='python3'
 alias pip='pip3'
-alias pipi='pip install -i https://pypi.tuna.tsinghua.edu.cn/simple'
 
 # Conda 别名
 alias cenv='conda env list'
@@ -277,77 +229,133 @@ setopt HIST_IGNORE_DUPS
 setopt HIST_IGNORE_SPACE
 ```
 
-### .zshrc 插件推荐
+### 插件手动加载（如果插件未自动加载）
 
 ```bash
-# 推荐插件组合
-plugins=(
-    # Git 相关
-    git                    # Git 快捷命令
-    gitignore             # 生成 .gitignore
+# 添加到 .zshrc 末尾
+source ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+source ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+```
 
-    # 自动补全和建议
-    zsh-autosuggestions   # 命令自动建议
-    zsh-syntax-highlighting # 语法高亮
+---
 
-    # 系统工具
-    sudo                  # 双击 ESC 在命令前加 sudo
-    copypath              # 复制当前路径
-    copyfile              # 复制文件内容
-    extract               # 一键解压
+## 国内镜像源配置
 
-    # 开发工具
-    python                # Python 别名
-    pip                   # pip 补全
-    conda                 # conda 补全
+### pip 配置
 
-    # 其他
-    history               # 历史命令
-    colored-man-pages     # 彩色 man 手册
-    command-not-found     # 未找到命令建议
-)
+**永久配置（推荐）**：
+```bash
+# 清华源
+pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+
+# 阿里云源
+pip config set global.index-url https://mirrors.aliyun.com/pypi/simple/
+```
+
+**配置文件 `~/.pip/pip.conf`**：
+```ini
+[global]
+index-url = https://pypi.tuna.tsinghua.edu.cn/simple
+trusted-host = pypi.tuna.tsinghua.edu.cn
+
+[install]
+trusted-host = pypi.tuna.tsinghua.edu.cn
+```
+
+**常用镜像源**：
+| 源 | URL |
+|---|---|
+| 清华 | `https://pypi.tuna.tsinghua.edu.cn/simple` |
+| 阿里云 | `https://mirrors.aliyun.com/pypi/simple/` |
+| 豆瓣 | `https://pypi.douban.com/simple/` |
+| 腾讯 | `https://mirrors.cloud.tencent.com/pypi/simple` |
+
+### conda 配置
+
+```bash
+# 配置清华源
+conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main
+conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free
+conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/r
+conda config --set show_channel_urls yes
+```
+
+### apt 配置（Ubuntu 22.04）
+
+**备份并修改 `/etc/apt/sources.list`**：
+
+```bash
+# 备份
+sudo cp /etc/apt/sources.list /etc/apt/sources.list.backup
+
+# 替换为清华源
+sudo sed -i 's@archive.ubuntu.com@mirrors.tuna.tsinghua.edu.cn@g' /etc/apt/sources.list
+sudo sed -i 's@security.ubuntu.com@mirrors.tuna.tsinghua.edu.cn@g' /etc/apt/sources.list
+
+# 更新
+sudo apt update
+```
+
+**手动编辑 `/etc/apt/sources.list`**：
+```
+# 清华源（Ubuntu 22.04 jammy）
+deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ jammy main restricted universe multiverse
+deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ jammy-updates main restricted universe multiverse
+deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ jammy-backports main restricted universe multiverse
+deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ jammy-security main restricted universe multiverse
+```
+
+### Docker 镜像配置
+
+**配置文件 `/etc/docker/daemon.json`**：
+```json
+{
+  "registry-mirrors": [
+    "https://2jgearuk.mirror.aliyuncs.com"
+  ]
+}
+```
+
+**应用配置**：
+```bash
+sudo systemctl daemon-reload
+sudo systemctl restart docker
+```
+
+**获取专属加速地址**：
+1. 登录阿里云容器镜像服务（免费注册）
+2. 进入「镜像工具」→「镜像加速器」
+3. 获取你的专属加速地址
+
+### Git 配置
+
+```bash
+# 配置 Git 用户信息
+git config --global user.name "Your Name"
+git config --global user.email "your.email@example.com"
+
+# 配置 Git 代理（如使用 Clash）
+git config --global http.proxy http://127.0.0.1:7890
+git config --global https.proxy http://127.0.0.1:7890
+
+# 取消代理
+git config --global --unset http.proxy
+git config --global --unset https.proxy
 ```
 
 ---
 
 ## 桌面快捷方式
 
-### 创建桌面快捷方式的方法
+### 创建桌面快捷方式方法
 
-#### 方法一：手动创建
-
-1. 创建 `.desktop` 文件：
 ```bash
+# 1. 创建 .desktop 文件
 nano ~/.local/share/applications/appname.desktop
-```
 
-2. 写入内容：
-```desktop
-[Desktop Entry]
-Version=1.0
-Name=应用名称
-Comment=应用描述
-Exec=/path/to/executable
-Icon=/path/to/icon.png
-Terminal=false
-Type=Application
-Categories=Development;
-```
-
-3. 设置权限：
-```bash
+# 2. 写入内容
+# 3. 设置权限
 chmod +x ~/.local/share/applications/appname.desktop
-```
-
-#### 方法二：从已有快捷方式复制
-
-```bash
-# 查找已安装应用的快捷方式
-ls /usr/share/applications/
-
-# 复制到桌面
-cp /usr/share/applications/code.desktop ~/Desktop/
-chmod +x ~/Desktop/code.desktop
 ```
 
 ### Chrome 桌面快捷方式
@@ -364,16 +372,6 @@ Terminal=false
 Icon=google-chrome
 Type=Application
 Categories=Network;WebBrowser;
-MimeType=text/html;text/xml;application/xhtml+xml;x-scheme-handler/http;x-scheme-handler/https;
-Actions=new-window;new-private-window;
-
-[Desktop Action new-window]
-Name=New Window
-Exec=/usr/bin/google-chrome-stable
-
-[Desktop Action new-private-window]
-Name=New Incognito Window
-Exec=/usr/bin/google-chrome-stable --incognito
 ```
 
 ### VSCode 桌面快捷方式
@@ -386,132 +384,55 @@ GenericName=Text Editor
 Exec=/usr/share/code/code --unity-launch %F
 Icon=vscode
 Type=Application
-StartupNotify=false
-StartupWMClass=Code
 Categories=TextEditor;Development;IDE;
-MimeType=text/plain;inode/directory;
-Actions=new-empty-window;
-Keywords=vscode;
-
-[Desktop Action new-empty-window]
-Name=New Empty Window
-Exec=/usr/share/code/code --new-window %F
-Icon=vscode
 ```
 
-### Cursor 桌面快捷方式
+### Clash Verge 桌面快捷方式
 
 ```desktop
 [Desktop Entry]
-Name=Cursor
-Comment=AI-powered code editor
-Exec=/opt/Cursor/cursor %F
-Icon=cursor
+Name=Clash Verge
+Comment=Clash GUI Client
+Exec=/opt/clash-verge/clash-verge
+Icon=clash-verge
 Type=Application
-Categories=Development;IDE;
-StartupNotify=true
-MimeType=text/plain;
-```
-
-### Anaconda Navigator 桌面快捷方式
-
-```desktop
-[Desktop Entry]
-Name=Anaconda Navigator
-GenericName=Anaconda Navigator
-Exec=/home/YOUR_USERNAME/anaconda3/bin/anaconda-navigator
-Icon=/home/YOUR_USERNAME/anaconda3/lib/python3.11/site-packages/anaconda_navigator/static/images/anaconda-icon-256x256.png
-Terminal=false
-Type=Application
-Categories=Development;
-```
-
-### 自定义脚本桌面快捷方式
-
-```desktop
-[Desktop Entry]
-Version=1.0
-Name=My Script
-Comment=运行自定义脚本
-Exec=/home/username/scripts/myscript.sh
-Icon=application-x-executable
-Terminal=true
-Type=Application
-Categories=Utility;
-```
-
----
-
-## Git 配置
-
-### .gitconfig 模板
-
-```ini
-[user]
-    name = Your Name
-    email = your.email@example.com
-
-[core]
-    editor = code --wait
-    autocrlf = input
-    quotepath = false
-
-[color]
-    ui = auto
-
-[alias]
-    co = checkout
-    br = branch
-    ci = commit
-    st = status
-    unstage = reset HEAD --
-    last = log -1 HEAD
-    visual = log --oneline --graph --decorate --all
-    amend = commit --amend --no-edit
-
-[push]
-    default = simple
-
-[pull]
-    rebase = false
-
-[init]
-    defaultBranch = main
+Categories=Network;
 ```
 
 ---
 
 ## 使用脚本配置
 
-### 自动配置环境变量
+### 配置环境变量
 
 ```bash
 # 配置 CUDA 环境
-python /workspace/projects/ubuntu-dev-setup/scripts/config_env.py \
-  --setup-cuda --cuda-version 12.6
+python scripts/config_env.py --setup-cuda --cuda-version 12.6
 
 # 配置 cuDNN 环境
-python /workspace/projects/ubuntu-dev-setup/scripts/config_env.py \
-  --setup-cudnn --cuda-version 12.6
+python scripts/config_env.py --setup-cudnn --cuda-version 12.6
 
 # 配置 conda 环境
-python /workspace/projects/ubuntu-dev-setup/scripts/config_env.py \
-  --setup-conda --conda-path ~/anaconda3
+python scripts/config_env.py --setup-conda --conda-path ~/anaconda3
 
-# 创建 .condarc
-python /workspace/projects/ubuntu-dev-setup/scripts/config_env.py \
-  --create-condarc \
-  --envs-dirs '["~/workspace/anaconda3/envs"]'
+# 创建 .condarc（使用国内镜像）
+python scripts/config_env.py --create-condarc --envs-dirs '["~/workspace/anaconda3/envs"]'
 ```
 
-### 自定义环境变量
+### 安装 Docker
 
 ```bash
-# 添加自定义环境变量到 .bashrc
-python /workspace/projects/ubuntu-dev-setup/scripts/config_env.py \
-  --config-file ~/.bashrc \
-  --env-vars '{
-    "MY_PROJECT_HOME": "/home/user/projects",
-    "JAVA_HOME": "/usr/lib/jvm/java-11-openjdk-amd64"
-  }'
+# 完整安装（自动配置阿里云镜像）
+python scripts/install_docker.py --install
+
+# 仅配置镜像加速器
+python scripts/install_docker.py --config-mirror --mirror-url "https://your-mirror.mirror.aliyuncs.com"
+```
+
+### 安装 Zsh
+
+```bash
+# 完整安装（使用国内镜像）
+python scripts/setup_zsh.py --use-sudo --install-oh-my-zsh --china-mirror \
+    --plugins "git zsh-autosuggestions zsh-syntax-highlighting"
 ```

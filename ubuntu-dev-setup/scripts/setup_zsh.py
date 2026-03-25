@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """
-Zsh 和 Oh-My-Zsh 配置脚本
+Zsh 和 Oh-My-Zsh 配置脚本（中国网络优化版）
 
 功能：
 - 安装 zsh
-- 安装 oh-my-zsh
-- 安装常用插件（自动补全、语法高亮）
+- 安装 oh-my-zsh（支持国内 Gitee 镜像）
+- 安装常用插件（支持国内 Gitee 镜像）
 - 配置主题
 - 设置为默认 shell
 """
@@ -81,23 +81,40 @@ def install_zsh(use_sudo=False):
         return False, f"安装失败: {output}"
 
 
-def install_oh_my_zsh():
-    """安装 oh-my-zsh"""
+def install_oh_my_zsh(use_china_mirror=True):
+    """安装 oh-my-zsh，支持国内镜像"""
     print("准备安装 oh-my-zsh...")
     
     if check_oh_my_zsh_installed():
         print("✓ oh-my-zsh 已安装")
         return True, "oh-my-zsh 已安装"
     
-    # 使用官方安装脚本
+    # 国内 Gitee 镜像（推荐）
+    if use_china_mirror:
+        print("使用 Gitee 国内镜像安装...")
+        install_url = "https://gitee.com/shmhlsy/oh-my-zsh-install.sh/raw/master/install.sh"
+        
+        success, output = run_command(
+            ["sh", "-c", f"curl -fsSL {install_url}"],
+            shell=True,
+            check=False,
+            input_text="n\n"
+        )
+        
+        if success or check_oh_my_zsh_installed():
+            print("✓ oh-my-zsh 安装成功（Gitee 镜像）")
+            return True, "安装成功"
+    
+    # 官方 GitHub 源（备选）
+    print("尝试官方 GitHub 源...")
     install_url = "https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh"
     
     # 方法1: 使用 wget
     success, output = run_command(
-        ["sh", "-c", f"$(wget {install_url} -O -)"],
+        ["sh", "-c", f"wget {install_url} -O - | sh"],
         shell=True,
         check=False,
-        input_text="n\n"  # 不自动切换 shell
+        input_text="n\n"
     )
     
     if success or check_oh_my_zsh_installed():
@@ -106,7 +123,7 @@ def install_oh_my_zsh():
     
     # 方法2: 使用 curl
     success, output = run_command(
-        ["sh", "-c", f"$(curl -fsSL {install_url})"],
+        ["sh", "-c", f"curl -fsSL {install_url}"],
         shell=True,
         check=False,
         input_text="n\n"
@@ -120,22 +137,29 @@ def install_oh_my_zsh():
     return False, f"安装失败: {output}"
 
 
-def install_zsh_plugins(plugins):
-    """安装 zsh 插件"""
+def install_zsh_plugins(plugins, use_china_mirror=True):
+    """安装 zsh 插件，支持国内镜像"""
     print(f"准备安装插件: {plugins}")
     
     zsh_custom = os.path.expanduser("~/.oh-my-zsh/custom/plugins")
     os.makedirs(zsh_custom, exist_ok=True)
     
+    # 插件源映射（支持国内镜像）
     plugin_map = {
-        "zsh-autosuggestions": "https://github.com/zsh-users/zsh-autosuggestions",
-        "zsh-syntax-highlighting": "https://github.com/zsh-users/zsh-syntax-highlighting"
+        "zsh-autosuggestions": {
+            "github": "https://github.com/zsh-users/zsh-autosuggestions",
+            "gitee": "https://gitee.com/zsh-users/zsh-autosuggestions"
+        },
+        "zsh-syntax-highlighting": {
+            "github": "https://github.com/zsh-users/zsh-syntax-highlighting",
+            "gitee": "https://gitee.com/Annihilater/zsh-syntax-highlighting"
+        }
     }
     
     installed = []
     for plugin in plugins:
         if plugin not in plugin_map:
-            print(f"⚠️  未知插件: {plugin}")
+            print(f"⚠️  未知插件: {plugin}，跳过")
             continue
         
         plugin_dir = os.path.join(zsh_custom, plugin)
@@ -145,17 +169,34 @@ def install_zsh_plugins(plugins):
             installed.append(plugin)
             continue
         
-        # 克隆插件
-        success, output = run_command(
-            ["git", "clone", plugin_map[plugin], plugin_dir],
-            check=False
-        )
+        # 优先使用国内镜像
+        clone_url = None
+        if use_china_mirror:
+            clone_url = plugin_map[plugin].get("gitee")
         
-        if success:
-            print(f"✓ 插件安装成功: {plugin}")
-            installed.append(plugin)
-        else:
-            print(f"✗ 插件安装失败: {plugin} - {output}")
+        # 尝试克隆
+        sources = []
+        if use_china_mirror and "gitee" in plugin_map[plugin]:
+            sources.append(("Gitee", plugin_map[plugin]["gitee"]))
+        if "github" in plugin_map[plugin]:
+            sources.append(("GitHub", plugin_map[plugin]["github"]))
+        
+        for source_name, url in sources:
+            print(f"尝试从 {source_name} 克隆 {plugin}...")
+            success, output = run_command(
+                ["git", "clone", url, plugin_dir],
+                check=False
+            )
+            
+            if success:
+                print(f"✓ 插件安装成功: {plugin}（{source_name}）")
+                installed.append(plugin)
+                break
+            else:
+                print(f"✗ 从 {source_name} 克隆失败: {output}")
+        
+        if plugin not in installed:
+            print(f"✗ 插件安装失败: {plugin}")
     
     return installed
 
@@ -236,19 +277,19 @@ def set_default_shell():
 def main():
     """主函数"""
     parser = argparse.ArgumentParser(
-        description='Zsh 和 Oh-My-Zsh 配置工具',
+        description='Zsh 和 Oh-My-Zsh 配置工具（中国网络优化版）',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 示例:
-  # 完整安装 zsh 和 oh-my-zsh
-  python setup_zsh.py --use-sudo --install-oh-my-zsh
+  # 完整安装（使用国内镜像）
+  python setup_zsh.py --use-sudo --install-oh-my-zsh --china-mirror
   
-  # 安装并配置插件
-  python setup_zsh.py --use-sudo --install-oh-my-zsh \\
+  # 安装并配置插件（国内镜像）
+  python setup_zsh.py --use-sudo --install-oh-my-zsh --china-mirror \\
       --plugins "git zsh-autosuggestions zsh-syntax-highlighting" --theme agnoster
   
-  # 仅安装插件
-  python setup_zsh.py --install-plugins --plugins "zsh-autosuggestions"
+  # 使用官方源安装
+  python setup_zsh.py --use-sudo --install-oh-my-zsh --no-china-mirror
   
   # 设置为默认 shell
   python setup_zsh.py --set-default-shell
@@ -285,6 +326,19 @@ def main():
     )
     
     parser.add_argument(
+        '--china-mirror',
+        action='store_true',
+        default=True,
+        help='使用国内镜像源 (默认启用)'
+    )
+    
+    parser.add_argument(
+        '--no-china-mirror',
+        action='store_true',
+        help='不使用国内镜像源'
+    )
+    
+    parser.add_argument(
         '--set-default-shell',
         action='store_true',
         help='设置 zsh 为默认 shell'
@@ -297,6 +351,9 @@ def main():
     )
     
     args = parser.parse_args()
+    
+    # 处理镜像选项
+    use_china_mirror = not args.no_china_mirror
     
     # 如果指定 --all，则启用所有选项
     if args.all:
@@ -327,13 +384,13 @@ def main():
     
     # 安装 oh-my-zsh
     if args.install_oh_my_zsh:
-        if not install_oh_my_zsh()[0]:
+        if not install_oh_my_zsh(use_china_mirror)[0]:
             success = False
     
     # 安装插件
     if args.plugins:
         plugins = args.plugins.split()
-        installed = install_zsh_plugins(plugins)
+        installed = install_zsh_plugins(plugins, use_china_mirror)
         
         if installed:
             if not configure_zshrc(installed, args.theme):
