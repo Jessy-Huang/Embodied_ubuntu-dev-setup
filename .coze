@@ -1,6 +1,6 @@
 [skill]
   skill_package = "ubuntu-dev-setup.skill"
   name = "ubuntu-dev-setup"
-  description = "自动化配置 Ubuntu 开发环境；当用户需要初始化新系统、配置算法开发环境、批量安装开发工具时使用"
+  description = "自动化配置 Ubuntu 开发环境（中国网络优化版）；当用户需要初始化新系统、配置算法开发环境、批量安装开发工具时使用"
   project_name = "系统环境配置技能"
-  project_description = "Ubuntu 系统环境自动配置工具"
+  project_description = "Ubuntu 环境自动配置（国内镜像优化）"
