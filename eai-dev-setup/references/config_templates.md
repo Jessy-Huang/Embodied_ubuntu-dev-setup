@@ -1,12 +1,13 @@
 # 配置文件模板（中国网络优化版）
 
-本文档提供各类配置文件的模板，包括环境变量、conda 配置、shell 配置、国内镜像源等。
+本文档提供各类配置文件的模板，包括环境变量、conda 配置、shell 配置、国内镜像源、代理配置等。
 
 ## 目录
 - [Shell 环境变量配置](#shell-环境变量配置)
 - [Conda 配置](#conda-配置)
 - [Zsh 配置](#zsh-配置)
 - [国内镜像源配置](#国内镜像源配置)
+- [代理配置](#代理配置)
 - [桌面快捷方式](#桌面快捷方式)
 
 ---
@@ -19,9 +20,14 @@
 
 ```bash
 # ==============================================================================
-# Ubuntu Dev Setup - 环境变量配置（中国网络优化版）
-# 由 ubuntu-dev-setup 自动添加
+# EAI Dev Setup - 环境变量配置（中国网络优化版）
+# 由 eai-dev-setup 自动添加
 # ==============================================================================
+
+# ------------------------------------------------------------------------------
+# HuggingFace 镜像配置
+# ------------------------------------------------------------------------------
+export HF_ENDPOINT=https://hf-mirror.com
 
 # ------------------------------------------------------------------------------
 # CUDA 环境变量 (根据实际安装版本调整)
@@ -84,6 +90,9 @@ alias cenv='conda env list'
 alias cact='conda activate'
 alias cdeact='conda deactivate'
 
+# HuggingFace 别名
+alias hfd='huggingface-cli download'
+
 # ------------------------------------------------------------------------------
 # PATH 扩展
 # ------------------------------------------------------------------------------
@@ -116,25 +125,6 @@ envs_dirs:
 pkgs_dirs:
   - ~/workspace/anaconda3/pkgs
   - ~/.conda/pkgs
-```
-
-### .condarc 自定义环境路径
-
-```yaml
-envs_dirs:
-  - /media/your_disk/workspace/anaconda3/envs
-  - ~/anaconda3/envs
-
-pkgs_dirs:
-  - /media/your_disk/workspace/anaconda3/pkgs
-  - ~/anaconda3/pkgs
-
-channels:
-  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main
-  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free
-  - defaults
-
-show_channel_urls: true
 ```
 
 ---
@@ -171,6 +161,9 @@ source $ZSH/oh-my-zsh.sh
 # 环境变量
 export PATH=$HOME/bin:$HOME/.local/bin:$PATH
 export LANG=en_US.UTF-8
+
+# HuggingFace 镜像
+export HF_ENDPOINT=https://hf-mirror.com
 
 # CUDA 环境变量
 export CUDA_PATH=/usr/local/cuda-12.6
@@ -211,30 +204,14 @@ alias gc='git commit -m'
 alias gp='git push'
 alias gl='git log --oneline --graph --decorate'
 
-# Python 别名
-alias python='python3'
-alias pip='pip3'
-
-# Conda 别名
-alias cenv='conda env list'
-alias cact='conda activate'
-alias cdeact='conda deactivate'
-alias ccreate='conda create -n'
-alias cremove='conda env remove -n'
+# HuggingFace 别名
+alias hfd='huggingface-cli download'
 
 # 历史记录配置
 HISTSIZE=10000
 SAVEHIST=10000
 setopt HIST_IGNORE_DUPS
 setopt HIST_IGNORE_SPACE
-```
-
-### 插件手动加载（如果插件未自动加载）
-
-```bash
-# 添加到 .zshrc 末尾
-source ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
-source ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 ```
 
 ---
@@ -247,18 +224,12 @@ source ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting/zsh-syntax-highlighti
 ```bash
 # 清华源
 pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
-
-# 阿里云源
-pip config set global.index-url https://mirrors.aliyun.com/pypi/simple/
 ```
 
 **配置文件 `~/.pip/pip.conf`**：
 ```ini
 [global]
 index-url = https://pypi.tuna.tsinghua.edu.cn/simple
-trusted-host = pypi.tuna.tsinghua.edu.cn
-
-[install]
 trusted-host = pypi.tuna.tsinghua.edu.cn
 ```
 
@@ -267,80 +238,113 @@ trusted-host = pypi.tuna.tsinghua.edu.cn
 |---|---|
 | 清华 | `https://pypi.tuna.tsinghua.edu.cn/simple` |
 | 阿里云 | `https://mirrors.aliyun.com/pypi/simple/` |
-| 豆瓣 | `https://pypi.douban.com/simple/` |
-| 腾讯 | `https://mirrors.cloud.tencent.com/pypi/simple` |
 
 ### conda 配置
 
 ```bash
 # 配置清华源
 conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main
-conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free
-conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/r
 conda config --set show_channel_urls yes
 ```
 
 ### apt 配置（Ubuntu 22.04）
 
-**备份并修改 `/etc/apt/sources.list`**：
-
 ```bash
-# 备份
-sudo cp /etc/apt/sources.list /etc/apt/sources.list.backup
-
 # 替换为清华源
 sudo sed -i 's@archive.ubuntu.com@mirrors.tuna.tsinghua.edu.cn@g' /etc/apt/sources.list
 sudo sed -i 's@security.ubuntu.com@mirrors.tuna.tsinghua.edu.cn@g' /etc/apt/sources.list
-
-# 更新
 sudo apt update
-```
-
-**手动编辑 `/etc/apt/sources.list`**：
-```
-# 清华源（Ubuntu 22.04 jammy）
-deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ jammy main restricted universe multiverse
-deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ jammy-updates main restricted universe multiverse
-deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ jammy-backports main restricted universe multiverse
-deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ jammy-security main restricted universe multiverse
 ```
 
 ### Docker 镜像配置
 
-**配置文件 `/etc/docker/daemon.json`**：
-```json
-{
-  "registry-mirrors": [
-    "https://2jgearuk.mirror.aliyuncs.com"
-  ]
-}
-```
-
-**应用配置**：
 ```bash
+# 配置阿里云镜像加速器
+sudo mkdir -p /etc/docker
+sudo tee /etc/docker/daemon.json <<-'EOF'
+{
+  "registry-mirrors": ["https://2jgearuk.mirror.aliyuncs.com"]
+}
+EOF
 sudo systemctl daemon-reload
 sudo systemctl restart docker
 ```
 
-**获取专属加速地址**：
-1. 登录阿里云容器镜像服务（免费注册）
-2. 进入「镜像工具」→「镜像加速器」
-3. 获取你的专属加速地址
+---
 
-### Git 配置
+## 代理配置
+
+### GitHub 代理（gh-proxy.org）
+
+**全局配置**：所有 git 操作自动通过代理加速
 
 ```bash
-# 配置 Git 用户信息
-git config --global user.name "Your Name"
-git config --global user.email "your.email@example.com"
+# 配置全局代理
+git config --global url."https://gh-proxy.org/https://github.com/".insteadOf "https://github.com/"
+```
 
-# 配置 Git 代理（如使用 Clash）
+**效果**：
+```bash
+# 克隆仓库会自动通过代理加速
+git clone https://github.com/user/repo.git
+
+# 实际访问的是
+# https://gh-proxy.org/https://github.com/user/repo.git
+```
+
+**取消代理**：
+```bash
+git config --global --unset url."https://gh-proxy.org/https://github.com/".insteadOf
+```
+
+### HuggingFace 镜像（hf-mirror.com）
+
+**配置环境变量**：
+```bash
+# 添加到 .bashrc
+echo "export HF_ENDPOINT=https://hf-mirror.com" >> ~/.bashrc
+source ~/.bashrc
+```
+
+**使用方法**：
+```bash
+# 下载模型
+huggingface-cli download --resume-download gpt2 --local-dir gpt2
+
+# 下载数据集
+huggingface-cli download --repo-type dataset --resume-download wikitext --local-dir wikitext
+
+# 禁用软链接（所见即所得）
+huggingface-cli download --resume-download gpt2 --local-dir gpt2 --local-dir-use-symlinks False
+
+# 在 Python 代码中使用
+from huggingface_hub import snapshot_download
+snapshot_download(repo_id="bert-base-uncased", local_dir="./bert-base")
+```
+
+**Python 代码中设置镜像**：
+```python
+import os
+os.environ['HF_ENDPOINT'] = 'https://hf-mirror.com'
+
+from transformers import AutoModel
+model = AutoModel.from_pretrained("bert-base-uncased")
+```
+
+### Git 代理（Clash 等）
+
+**配置本地代理**：
+```bash
+# 配置代理（如使用 Clash，默认端口 7890）
 git config --global http.proxy http://127.0.0.1:7890
 git config --global https.proxy http://127.0.0.1:7890
 
 # 取消代理
 git config --global --unset http.proxy
 git config --global --unset https.proxy
+
+# 仅对 GitHub 使用代理
+git config --global http.https://github.com.proxy http://127.0.0.1:7890
 ```
 
 ---
@@ -350,11 +354,10 @@ git config --global --unset https.proxy
 ### 创建桌面快捷方式方法
 
 ```bash
-# 1. 创建 .desktop 文件
+# 创建 .desktop 文件
 nano ~/.local/share/applications/appname.desktop
 
-# 2. 写入内容
-# 3. 设置权限
+# 设置权限
 chmod +x ~/.local/share/applications/appname.desktop
 ```
 
@@ -365,10 +368,7 @@ chmod +x ~/.local/share/applications/appname.desktop
 Version=1.0
 Name=Google Chrome
 GenericName=Web Browser
-Comment=Access the Internet
 Exec=/usr/bin/google-chrome-stable %U
-StartupNotify=true
-Terminal=false
 Icon=google-chrome
 Type=Application
 Categories=Network;WebBrowser;
@@ -380,7 +380,6 @@ Categories=Network;WebBrowser;
 [Desktop Entry]
 Name=Visual Studio Code
 Comment=Code Editing. Redefined.
-GenericName=Text Editor
 Exec=/usr/share/code/code --unity-launch %F
 Icon=vscode
 Type=Application
@@ -414,25 +413,28 @@ python scripts/config_env.py --setup-cudnn --cuda-version 12.6
 
 # 配置 conda 环境
 python scripts/config_env.py --setup-conda --conda-path ~/anaconda3
+```
 
-# 创建 .condarc（使用国内镜像）
-python scripts/config_env.py --create-condarc --envs-dirs '["~/workspace/anaconda3/envs"]'
+### 配置代理
+
+```bash
+# 配置 GitHub 代理
+git config --global url."https://gh-proxy.org/https://github.com/".insteadOf "https://github.com/"
+
+# 配置 HuggingFace 镜像
+echo "export HF_ENDPOINT=https://hf-mirror.com" >> ~/.bashrc
+source ~/.bashrc
 ```
 
 ### 安装 Docker
 
 ```bash
-# 完整安装（自动配置阿里云镜像）
 python scripts/install_docker.py --install
-
-# 仅配置镜像加速器
-python scripts/install_docker.py --config-mirror --mirror-url "https://your-mirror.mirror.aliyuncs.com"
 ```
 
 ### 安装 Zsh
 
 ```bash
-# 完整安装（使用国内镜像）
 python scripts/setup_zsh.py --use-sudo --install-oh-my-zsh --china-mirror \
     --plugins "git zsh-autosuggestions zsh-syntax-highlighting"
 ```
