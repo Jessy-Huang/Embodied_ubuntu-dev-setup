@@ -1,6 +1,10 @@
 ---
 name: eai-dev-setup
+version: 1.0.0
 description: 自动化配置 Ubuntu 算法开发环境（中国网络优化版）；当用户需要初始化新系统、配置深度学习开发环境、批量安装开发工具时使用
+author: Jessy-Huang
+license: MIT
+repository: https://github.com/Jessy-Huang/Embodied_ubuntu-dev-setup
 dependency:
   python:
     - requests==2.31.0
