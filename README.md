@@ -1,6 +1,7 @@
 # EAI-Dev-Setup
 
 [![ClawHub](https://img.shields.io/badge/ClawHub-eai--dev--setup-blue)](https://clawhub.ai/skills/eai-dev-setup)
+[![SkillHub](https://img.shields.io/badge/SkillHub-eai--dev--setup-green)](https://skillhub.tencent.com)
 [![GitHub](https://img.shields.io/badge/GitHub-Embodied__ubuntu--dev--setup-black)](https://github.com/Jessy-Huang/Embodied_ubuntu-dev-setup)
 [![License](https://img.shields.io/badge/License-MIT--0-green)](LICENSE)
 
@@ -47,7 +48,13 @@
 npx clawhub@latest install eai-dev-setup
 ```
 
-### 方式二：手动下载
+### 方式二：通过 SkillHub 安装
+
+```bash
+npx skillhub install eai-dev-setup
+```
+
+### 方式三：手动下载
 
 ```bash
 # 克隆仓库
@@ -143,10 +150,11 @@ python scripts/install_package.py --package-name code \
 
 本 Skill 已发布到以下平台：
 
-| 平台 | 地址 |
-|------|------|
-| **ClawHub** | https://clawhub.ai/skills/eai-dev-setup |
-| **GitHub** | https://github.com/Jessy-Huang/Embodied_ubuntu-dev-setup |
+| 平台 | 地址 | 说明 |
+|------|------|------|
+| **ClawHub** | https://clawhub.ai/skills/eai-dev-setup | 国际平台，自动发布 |
+| **SkillHub** | https://skillhub.tencent.com | 腾讯云平台，专为中国用户优化 |
+| **GitHub** | https://github.com/Jessy-Huang/Embodied_ubuntu-dev-setup | 源码仓库 |
 
 ## ⚠️ 注意事项
 
