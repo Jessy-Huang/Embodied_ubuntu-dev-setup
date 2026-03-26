@@ -42,19 +42,25 @@
 
 ## 🚀 安装方式
 
-### 方式一：通过 ClawHub 安装（推荐）
+> 参考 [SkillHub 安装指南](https://skillhub.tencent.com/#categories)
 
+### 方式一：Agent 方式安装（推荐）
+
+通过 AI Agent 自动安装，支持以下渠道：
+
+#### ClawHub 渠道
 ```bash
 npx clawhub@latest install eai-dev-setup
 ```
 
-### 方式二：通过 SkillHub 安装
-
+#### GitHub 渠道
 ```bash
-npx skillhub install eai-dev-setup
+npx skillhub install eai-dev-setup --no-api
 ```
 
-### 方式三：手动下载
+### 方式二：Human 方式安装
+
+手动下载并安装：
 
 ```bash
 # 克隆仓库
@@ -64,58 +70,77 @@ git clone https://github.com/Jessy-Huang/Embodied_ubuntu-dev-setup.git
 wget https://clawhub.ai/skills/eai-dev-setup/download
 ```
 
-## 📖 快速上手
+### 安装成功
 
-### 第一步：系统检测
+![安装成功截图](./asset/安装成功截图.JPEG)
+
+## 🤖 在 OpenClaw 中使用
+
+### 安装 OpenClaw
+
+OpenClaw 是一个强大的 AI Agent 平台，支持加载和运行 Skill。
+
+- **官方网站**：https://openclaw.ai
+- **GitHub**：https://github.com/openclaw
+- **安装教程**：参考 [OpenClaw 快速开始](https://github.com/openclaw/clawhub#quick-start)
 
 ```bash
-python scripts/system_check.py
+# 使用 npm 安装 ClawHub CLI
+npm install -g clawhub
+
+# 或使用 npx 直接运行
+npx clawhub@latest --help
 ```
 
-检测内容包括：
-- Ubuntu 版本和内核
-- 已安装的开发工具
-- GPU 信息（如有）
-- 可用磁盘空间
+### 使用自然语言测试 Skill
 
-### 第二步：配置网络代理
+安装 Skill 后，在 OpenClaw 中直接使用自然语言与 Agent 交互，Agent 会自动调用 Skill 完成任务。
 
-```bash
-# 配置 GitHub 代理（加速所有 git 操作）
-git config --global url."https://gh-proxy.org/https://github.com/".insteadOf "https://github.com/"
+#### 测试一：安装 Zsh
 
-# 配置 HuggingFace 镜像（加速模型下载）
-echo "export HF_ENDPOINT=https://hf-mirror.com" >> ~/.bashrc
-source ~/.bashrc
+![测试Zsh安装](./asset/测试zsh安装.PNG)
+
+![测试Zsh安装成功](./asset/测试zsh安装成功.PNG)
+
+**用户输入示例**：
+```
+帮我安装 zsh 和 oh-my-zsh，使用国内镜像加速
 ```
 
-### 第三步：安装 Docker
+#### 测试二：配置深度学习开发环境
 
-```bash
-python scripts/install_docker.py --install
+![配置深度学习开发环境1](./asset/配置深度学习开发环境1.PNG)
+
+![配置深度学习开发环境2](./asset/配置深度学习开发环境2.png)
+
+**用户输入示例**：
+```
+帮我配置深度学习开发环境，安装 Docker 和 Conda
 ```
 
-### 第四步：安装 Zsh
+#### 测试三：安装常用软件
 
-```bash
-python scripts/setup_zsh.py --use-sudo --install-oh-my-zsh --china-mirror \
-    --plugins "git zsh-autosuggestions zsh-syntax-highlighting"
+**用户输入示例**：
+```
+帮我安装以下软件：飞书、VSCode、Chrome
 ```
 
-### 第五步：安装基础工具
+**更多指令示例**：
+```
+# 安装终端工具
+帮我安装 Terminator 终端
 
-```bash
-# 安装 Chrome
-python scripts/install_package.py --package-name google-chrome-stable \
-    --install-type url \
-    --deb-url "https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb" \
-    --use-sudo
+# 安装远程桌面
+帮我安装 ToDesk 远程控制软件
 
-# 安装 VSCode
-python scripts/install_package.py --package-name code \
-    --install-type url \
-    --deb-url "https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64" \
-    --use-sudo
+# 安装录屏工具
+帮我安装 Kazam 录屏软件
+
+# 配置 HuggingFace 镜像
+帮我配置 HuggingFace 镜像源，加速模型下载
+
+# 完整环境配置
+帮我配置一个完整的深度学习开发环境，包括 Docker、Conda、CUDA 驱动
 ```
 
 ## 📚 文档
@@ -152,7 +177,7 @@ python scripts/install_package.py --package-name code \
 
 | 平台 | 地址 | 说明 |
 |------|------|------|
-| **ClawHub** | https://clawhub.ai/skills/eai-dev-setup | 国际平台，自动发布 |
+| **ClawHub** | https://clawhub.ai/skills/eai-dev-setup | 国际平台，支持 Agent 自动安装 |
 | **SkillHub** | https://skillhub.tencent.com | 腾讯云平台，专为中国用户优化 |
 | **GitHub** | https://github.com/Jessy-Huang/Embodied_ubuntu-dev-setup | 源码仓库 |
 

@@ -3,4 +3,4 @@
   name = "eai-dev-setup"
   description = "自动化配置 Ubuntu 算法开发环境（中国网络优化版）；当用户需要初始化新系统、配置深度学习开发环境、批量安装开发工具时使用"
   project_name = "系统环境配置技能"
-  project_description = "Ubuntu 算法开发环境自动配置"
+  project_description = "自动化配置 Ubuntu 开发环境"
